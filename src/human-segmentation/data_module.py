@@ -31,13 +31,13 @@ class HumanSegmentationDataset(Dataset):
         original_image_size = np.array(image).shape[:2]
         image = self.resize_transform.apply_image(np.array(image))
         image_torch = torch.as_tensor(image)
-        breakpoint()
-        transformed_image = image_torch.permute(2, 0, 1).contiguous()[None, :, :, :]
+        transformed_image = image_torch.permute(2, 0, 1).contiguous()[:, :, :]
         input_image = self.model.preprocess(transformed_image)
         input_size = tuple(transformed_image.shape[-2:])
 
-        mask = Image.open(mask_name)
-        if self.transform:
-            mask = self.transform(mask)
+        mask = Image.open(mask_name).convert("L")  # Convert to grayscale
+        mask = np.array(mask)
+        mask = torch.from_numpy(mask)  # Convert to torch.Tensor
+        mask = mask.float()  # Ensure the mask is float type
 
         return input_image, mask, original_image_size, input_size
