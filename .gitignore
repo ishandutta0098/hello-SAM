@@ -3,3 +3,6 @@ input
 .ipynb_checkpoints
 lightning_logs
 __pycache__
+notebooks
+resources
+.DS_Store
